@@ -1,0 +1,317 @@
+<?php
+session_start();
+include "koneksi.php";
+include "sidebar.php";
+
+// === HAPUS LAPORAN ===
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['hapus_laporan'])) {
+    if (!empty($_POST['selected_id'])) {
+        $ids = implode(",", array_map('intval', $_POST['selected_id']));
+        $query = "DELETE FROM laporan WHERE id IN ($ids)";
+        mysqli_query($conn, $query);
+    }
+    header("Location: dashboard_laporan.php?hapus=1");
+    exit();
+}
+
+// === SIMPAN LAPORAN BARU ===
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_laporan'])) {
+    $nama = $_POST['nama'];
+    $divisi = $_POST['divisi'];
+    $mesin_id = $_POST['mesin_id'];
+    $pesan = $_POST['pesan'];
+    $kategori = $_POST['kategori'];
+
+    $sql = "INSERT INTO laporan (nama, divisi, mesin_id, pesan, kategori, tanggal, status) 
+            VALUES ('$nama', '$divisi', '$mesin_id', '$pesan', '$kategori', NOW(), 'kerusakan')";
+    if (mysqli_query($conn, $sql)) {
+        header("Location: dashboard_laporan.php?success=1");
+        exit;
+    } else {
+        echo "Error: " . mysqli_error($conn);
+    }
+}
+
+// === AMBIL LAPORAN (PILIH MEKANIK) ===
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ambil_laporan'])) {
+    $id_laporan = $_POST['id_laporan'];
+    $mekanik_ids = $_POST['nama_mekanik'] ?? [];
+
+    if (empty($mekanik_ids)) {
+        echo "<script>alert('Pilih minimal satu mekanik.'); history.back();</script>";
+        exit;
+    }
+
+    // Ambil nama mekanik dari tabel berdasarkan ID
+    $nama_mekanik_list = [];
+    $id_str = implode(",", array_map('intval', $mekanik_ids));
+    $query = mysqli_query($conn, "SELECT nama FROM mekanik WHERE id IN ($id_str)");
+    while ($row = mysqli_fetch_assoc($query)) {
+        $nama_mekanik_list[] = $row['nama'];
+    }
+
+    $nama_mekanik = implode(", ", $nama_mekanik_list);
+    $mekanik_id_str = implode(",", $mekanik_ids);
+
+    // Update laporan → pindah ke proses
+    $sql = "UPDATE laporan 
+            SET status='proses', mekanik_id=?, pesan_mekanik=? 
+            WHERE id=?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssi", $mekanik_id_str, $nama_mekanik, $id_laporan);
+
+    if ($stmt->execute()) {
+        header("Location: list_proses.php?ambil=1");
+        exit;
+    } else {
+        echo "Error: " . $conn->error;
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Laporan</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="main-content">
+        <h1>LAPORAN KERUSAKAN</h1>
+        <p class="breadcrumb">Halaman / List Kerusakan</p>
+
+        <?php if (isset($_GET['success'])): ?>
+            <p class="success" id="successMsg">✅ Laporan berhasil disimpan!</p>
+        <?php endif; ?>
+        <?php if (isset($_GET['ambil'])): ?>
+            <p class="success" id="successMsg">✅ Laporan berhasil diambil ke proses!</p>
+        <?php endif; ?>
+        <?php if (isset($_GET['hapus'])): ?>
+            <p class="success" id="successMsg">✅ Laporan berhasil dihapus!</p>
+        <?php endif; ?>
+
+        <div class="filter">
+            <label for="filterKategori">Filter Kategori:</label>
+            <select id="filterKategori" onchange="filterTable()">
+                <option value="all">Semua</option>
+                <option value="Biasa">Biasa</option>
+                <option value="Sedang">Sedang</option>
+                <option value="Urgent">Urgent</option>
+            </select>
+
+            <label for="filterStatus" style="margin-left: 20px;">Filter Status:</label>
+            <select id="filterStatus" onchange="filterTable()">
+                <option value="all">Semua</option>
+                <option value="kerusakan">Kerusakan</option>
+                <option value="ditunda">Ditunda</option>
+            </select>
+        </div>
+
+        <form id="hapusForm" method="POST">
+            <input type="hidden" name="hapus_laporan" value="1">
+
+            <table id="laporanTable">
+                <thead>
+                    <tr>
+                        <th style="width:40px; text-align:center;"><input type="checkbox" id="checkAll" onclick="toggleAll(this)"></th>
+                        <th>Tanggal</th>
+                        <th>Mesin</th>
+                        <th>Keterangan</th>
+                        <th>Pesan Mekanik</th>
+                        <th>Nama Pelapor</th>
+                        <th>Divisi</th>
+                        <th>Kategori</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $result = mysqli_query($conn, "
+                        SELECT l.*, m.nama_mesin,
+                            GROUP_CONCAT(mk.nama SEPARATOR ', ') AS nama_mekanik
+                        FROM laporan l
+                        LEFT JOIN mesin m ON l.mesin_id = m.id
+                        LEFT JOIN mekanik mk ON FIND_IN_SET(mk.id, l.mekanik_id)
+                        WHERE l.status IN ('kerusakan', 'ditunda')
+                        GROUP BY l.id
+                        ORDER BY l.tanggal DESC
+                    ");
+
+                    if (mysqli_num_rows($result) > 0) {
+                        while ($laporan = mysqli_fetch_assoc($result)) {
+                            $kategoriClass = strtolower($laporan['kategori']);
+                            echo "<tr data-kategori='{$laporan['kategori']}'>
+                                <td style='text-align:center;'><input type='checkbox' name='selected_id[]' value='{$laporan['id']}'></td>
+                                <td>{$laporan['tanggal']}</td>
+                                <td>
+                                    <a href='#' onclick=\"openDetailPopup(
+                                        '{$laporan['id']}',
+                                        '" . htmlspecialchars($laporan['nama_mesin'], ENT_QUOTES) . "',
+                                        '" . htmlspecialchars($laporan['pesan'], ENT_QUOTES) . "',
+                                        '{$laporan['status']}',
+                                        '" . htmlspecialchars($laporan['mekanik_id'] ?? '', ENT_QUOTES) . "',
+                                        '" . htmlspecialchars($laporan['pesan_mekanik'] ?? '', ENT_QUOTES) . "'
+                                    )\">{$laporan['nama_mesin']}</a>
+                                </td>
+                                <td>{$laporan['pesan']}</td>
+                                <td>" . ($laporan['pesan_mekanik'] ?? '-') . "</td>
+                                <td>{$laporan['nama']}</td>
+                                <td>{$laporan['divisi']}</td>
+                                <td class='kategori {$kategoriClass}'>" . ucfirst($laporan['kategori']) . "</td>
+                                <td class='status'>{$laporan['status']}</td>
+                            </tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='9' style='text-align:center; padding:15px;'>Tidak ada laporan Kerusakan.</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+
+            <button type="button" onclick="openDeletePopup()" class="hapus-float-btn">Hapus Laporan</button>
+        </form>
+    </div>
+
+    <!-- Popup Tambah Laporan -->
+    <div class="popup" id="popupForm">
+        <div class="popup-content">
+            <button class="close-btn" onclick="openPopup()">&times;</button>
+            <h2>Registrasi Laporan</h2>
+            <form method="POST">
+                <label>Nama:</label>
+                <input type="text" name="nama" required>
+                <label>Divisi:</label>
+                <select name="divisi" required>
+                    <option value="Gudang">Gudang</option>
+                    <option value="Hollow">Hollow</option>
+                    <option value="Tiang">Tiang</option>
+                    <option value="Slitter">Slitter</option>
+                    <option value="Subcon">Subcon</option>
+                    <option value="Grating">Grating</option>
+                    <option value="H-Beam">H-Beam</option>
+                </select>
+                <label>Mesin:</label>
+                <select name="mesin_id" required>
+                    <option value="">-- Pilih Mesin --</option>
+                    <?php
+                    $mesin_res = mysqli_query($conn, "SELECT id, nama_mesin FROM mesin ORDER BY nama_mesin ASC");
+                    while ($m = mysqli_fetch_assoc($mesin_res)) {
+                        echo "<option value='{$m['id']}'>{$m['nama_mesin']}</option>";
+                    }
+                    ?>
+                </select>
+                <label>Pesan Kerusakan:</label>
+                <textarea name="pesan" rows="3" required></textarea>
+                <label>Kategori:</label>
+                <select name="kategori" required>
+                    <option value="Biasa">Biasa</option>
+                    <option value="Sedang">Sedang</option>
+                    <option value="Urgent">Urgent</option>
+                </select>
+                <button type="submit" name="submit_laporan">Kirim Laporan</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Popup Detail -->
+    <div id="popupDetail" class="popup">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closeDetailPopup()">&times;</span>
+            <h2>Detail Laporan</h2>
+            <input type="hidden" id="detail_id">
+            <label>Nama Mesin:</label>
+            <input type="text" id="detail_mesin" readonly>
+            <label>Keterangan:</label>
+            <textarea id="detail_pesan" readonly></textarea>
+            <label>Pesan Mekanik:</label>
+            <textarea id="detail_pesan_mekanik" readonly></textarea>
+            <label>Pilih Mekanik:</label>
+            <div id="mekanikList">
+                <?php
+                $sql = "SELECT id, nama FROM mekanik ORDER BY nama ASC";
+                $result = mysqli_query($conn, $sql);
+                if ($result && mysqli_num_rows($result) > 0) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo '<label><input type="checkbox" value="' . $row['id'] . '"> ' . htmlspecialchars($row['nama']) . '</label>';
+                    }
+                } else {
+                    echo "<p>Tidak ada data mekanik</p>";
+                }
+                ?>
+            </div>
+            <button id="ambilBtn" class="btn-ambil">Ambil</button>
+            <form id="ambilForm" method="POST" style="display:none;">
+                <input type="hidden" name="ambil_laporan" value="1">
+                <input type="hidden" id="ambil_id_laporan" name="id_laporan">
+                <div id="ambil_mekanik_inputs"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openDetailPopup(id, mesin, pesan, status, mekanik_ids, pesan_mekanik) {
+            const popup = document.getElementById('popupDetail');
+            popup.style.display = 'flex';
+            document.getElementById('detail_id').value = id;
+            document.getElementById('detail_mesin').value = mesin;
+            document.getElementById('detail_pesan').value = pesan;
+            document.getElementById('detail_pesan_mekanik').value = pesan_mekanik || '';
+
+            const checkboxes = document.querySelectorAll('#mekanikList input[type=checkbox]');
+            const ambilBtn = document.getElementById('ambilBtn');
+
+            checkboxes.forEach(cb => { cb.checked = false; cb.disabled = false; });
+
+            if (mekanik_ids) {
+                mekanik_ids.split(",").forEach(id => {
+                    checkboxes.forEach(cb => {
+                        if (cb.value === id.trim()) cb.checked = true;
+                    });
+                });
+            }
+
+            if (status === 'ditunda') {
+                checkboxes.forEach(cb => cb.disabled = true);
+                ambilBtn.style.display = 'block';
+                ambilBtn.textContent = 'Lanjutkan Perbaikan';
+                ambilBtn.style.backgroundColor = '#27ae60';
+            } else if (status === 'kerusakan') {
+                ambilBtn.style.display = 'block';
+                ambilBtn.textContent = 'Ambil';
+                ambilBtn.style.backgroundColor = '#39c6ed';
+            } else {
+                ambilBtn.style.display = 'none';
+            }
+        }
+
+        function closeDetailPopup() { document.getElementById('popupDetail').style.display = 'none'; }
+        function toggleAll(src) { document.querySelectorAll('input[name="selected_id[]"]').forEach(cb => cb.checked = src.checked); }
+        document.getElementById("ambilBtn").addEventListener("click", function() {
+            const idLaporan = document.getElementById("detail_id").value;
+            const checkboxes = document.querySelectorAll('#mekanikList input[type=checkbox]:checked');
+            const form = document.getElementById("ambilForm");
+            const mekanikContainer = document.getElementById("ambil_mekanik_inputs");
+            mekanikContainer.innerHTML = "";
+            document.getElementById("ambil_id_laporan").value = idLaporan;
+
+            checkboxes.forEach(cb => {
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "nama_mekanik[]";
+                input.value = cb.value;
+                mekanikContainer.appendChild(input);
+            });
+            form.submit();
+        });
+        // === Fungsi untuk buka dan tutup popup ===
+function openPopup() {
+    document.getElementById('popupForm').style.display = 'flex';
+}
+
+function closePopup() {
+    document.getElementById('popupForm').style.display = 'none';
+}
+
+    </script>
+</body>
+</html>
