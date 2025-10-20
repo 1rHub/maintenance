@@ -35,11 +35,11 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
         body {
             font-family: 'Poppins', sans-serif;
         }
-        
+
         /* === MAIN CONTAINER === */
         .main-container {
             margin-left: 30px; /* posisi agar tidak mepet sidebar */
-            padding: 40px 10px 80px;
+            padding: 40px 10px;
         }
 
         h1 {
@@ -368,6 +368,9 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
                 document.getElementById('hapusForm').submit();
             }
         }
+
+        
+
     </script>
 </body>
 </html>

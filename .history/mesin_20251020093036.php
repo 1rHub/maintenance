@@ -33,13 +33,14 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
         body {
+            background: #f4f6f9;
             font-family: 'Poppins', sans-serif;
         }
-        
+
         /* === MAIN CONTAINER === */
         .main-container {
-            margin-left: 30px; /* posisi agar tidak mepet sidebar */
-            padding: 40px 10px 80px;
+            margin-left: 50px; /* posisi agar tidak mepet sidebar */
+            padding: 40px 60px;
         }
 
         h1 {
@@ -82,26 +83,25 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
             font-size: 15px;
         }
 
-        .table {
-            width: 150%;
+        /* === TABLE WRAPPER === */
+        .table-wrapper {
+            background: #fff;
+            border-radius: 15px;
+            padding: 20px 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto; /* posisikan di tengah */
+        }
+
+        table {
+            width: 100%;
             border-collapse: collapse;
             text-align: left;
         }
 
-        #mesinTable th:first-child,
-#mesinTable td:first-child {
-    text-align: center;
-    width: 150px;
-}
-
-#mesinTable th:last-child,
-#mesinTable td:last-child {
-    text-align: center;
-    width: 180px;
-}
-
         th, td {
-            padding: 8px 16px;
+            padding: 14px 16px;
             border-bottom: 1px solid #eee;
         }
 
@@ -120,8 +120,6 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
         td {
             color: #333;
             font-weight: 500;
-            padding: 4px 16px;
-            
         }
 
         td a {
@@ -229,7 +227,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
         <div class="table-wrapper">
             <!-- 🔍 Search -->
             <div class="search-box">
-                <i></i>
+                <i>🔍</i>
                 <input type="text" id="searchMesin" placeholder="Cari nama mesin...">
             </div>
 

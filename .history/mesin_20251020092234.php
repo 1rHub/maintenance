@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["hapus_mesin"])) {
     exit;
 }
 
-// === Ambil Semua Mesin (urutan ASC biar baru di bawah) ===
+// === Ambil Semua Mesin (urutan ASC supaya baru di bawah) ===
 $result = mysqli_query($conn, "SELECT * FROM mesin ORDER BY id ASC");
 $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
 ?>
@@ -33,75 +33,78 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        /* === MAIN CONTAINER === */
-        .main-container {
-            margin-left: 30px; /* posisi agar tidak mepet sidebar */
-            padding: 40px 10px 80px;
+            background: #f5f7fa;
         }
 
-        h1 {
-            font-size: 26px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 6px;
+        /* ===== AREA UTAMA ===== */
+        .main-content {
+            margin-left: 260px; /* menyesuaikan sidebar */
+            padding: 40px 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .main-content h1 {
+            text-align: center;
+            margin-bottom: 8px;
         }
 
         .breadcrumb {
-            color: #888;
+            text-align: center;
+            color: #777;
             font-size: 14px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
-        /* === SEARCH BOX === */
+        .table-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            background: transparent;
+        }
+
+        /* ===== SEARCH BAR ===== */
         .search-box {
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
+            margin: 0 auto 20px auto;
             display: flex;
             align-items: center;
-            background: #fff;
-            border-radius: 12px;
+            background: white;
+            border-radius: 10px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.08);
             padding: 10px 15px;
-            margin-bottom: 20px;
-        }
-
-        .search-box i {
-            color: #39c6ed;
-            font-size: 18px;
-            margin-right: 10px;
         }
 
         .search-box input {
             flex: 1;
             border: none;
             outline: none;
-            background: transparent;
             font-size: 15px;
+            padding-left: 5px;
+            background: transparent;
         }
 
-        .table {
-            width: 150%;
+        .search-box i {
+            color: #39c6ed;
+            font-size: 18px;
+            margin-right: 8px;
+        }
+
+        /* ===== TABEL ===== */
+        table {
+            width: 50%;
             border-collapse: collapse;
-            text-align: left;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
         }
-
-        #mesinTable th:first-child,
-#mesinTable td:first-child {
-    text-align: center;
-    width: 150px;
-}
-
-#mesinTable th:last-child,
-#mesinTable td:last-child {
-    text-align: center;
-    width: 180px;
-}
 
         th, td {
-            padding: 8px 16px;
+            padding: 14px 18px;
+            text-align: left;
             border-bottom: 1px solid #eee;
         }
 
@@ -109,19 +112,16 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
             background: #39c6ed;
             color: white;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
             font-size: 14px;
+        }
+
+        td {
+            font-weight: 500;
+            color: #333;
         }
 
         tr:hover td {
             background: #f0fbff;
-        }
-
-        td {
-            color: #333;
-            font-weight: 500;
-            padding: 4px 16px;
-            
         }
 
         td a {
@@ -135,14 +135,13 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
             color: #39c6ed;
         }
 
-        /* === BUTTON HAPUS === */
+        /* Tombol hapus */
         .hapus-btn {
             background: #e74c3c;
-            color: #fff;
+            color: white;
             border: none;
             padding: 6px 12px;
             border-radius: 6px;
-            font-size: 14px;
             cursor: pointer;
             transition: 0.2s;
         }
@@ -152,13 +151,13 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
             transform: scale(1.05);
         }
 
-        /* === FLOATING ADD BUTTON === */
+        /* Tombol tambah (float) */
         .float-btn {
             position: fixed;
             bottom: 30px;
-            right: 40px;
+            right: 50px;
             background-color: #39c6ed;
-            color: #fff;
+            color: white;
             font-size: 28px;
             width: 55px;
             height: 55px;
@@ -166,7 +165,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
             border: none;
             box-shadow: 0 6px 15px rgba(57,198,237,0.4);
             cursor: pointer;
-            transition: 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .float-btn:hover {
@@ -174,27 +173,22 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
             transform: scale(1.1);
         }
 
-        /* === POPUP === */
+        /* Popup tambah mesin */
         .popup .popup-content {
             width: 100%;
             max-width: 400px;
             text-align: center;
-            background: #fff;
-            border-radius: 15px;
-            padding: 25px 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .popup-content h2 {
             margin-bottom: 15px;
-            font-size: 20px;
             color: #333;
         }
 
         .popup-content input[type="text"] {
             width: 90%;
             padding: 10px;
-            margin: 10px 0 15px;
+            margin: 10px 0;
             border: 1px solid #ccc;
             border-radius: 8px;
             outline: none;
@@ -203,12 +197,12 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
         .popup-content input:focus {
             border-color: #39c6ed;
-            box-shadow: 0 0 5px rgba(57,198,237,0.3);
+            box-shadow: 0 0 5px rgba(57,198,237,0.4);
         }
 
         .popup-content button {
             background: #39c6ed;
-            color: #fff;
+            color: white;
             padding: 8px 15px;
             border: none;
             border-radius: 8px;
@@ -222,18 +216,18 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
     </style>
 </head>
 <body>
-    <div class="main-container">
+    <div class="main-content">
         <h1>Daftar Mesin</h1>
         <p class="breadcrumb">Halaman / Mesin</p>
 
         <div class="table-wrapper">
             <!-- 🔍 Search -->
             <div class="search-box">
-                <i></i>
+                <i>🔍</i>
                 <input type="text" id="searchMesin" placeholder="Cari nama mesin...">
             </div>
 
-            <!-- 📋 Table -->
+            <!-- 📋 Tabel Mesin -->
             <table id="mesinTable">
                 <thead>
                     <tr>
@@ -252,7 +246,9 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                         <?= htmlspecialchars($m['nama_mesin']) ?>
                                     </a>
                                 </td>
-                                <td><button class="hapus-btn" onclick="hapusMesin(event, <?= $m['id'] ?>)">Hapus</button></td>
+                                <td>
+                                    <button class="hapus-btn" onclick="hapusMesin(event, <?= $m['id'] ?>)">Hapus</button>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -263,10 +259,10 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
         </div>
     </div>
 
-    <!-- ➕ Floating Add Button -->
+    <!-- ➕ Tombol Tambah Mesin -->
     <button class="float-btn" onclick="openTambahPopup()">+</button>
 
-    <!-- 📋 Popup Tambah -->
+    <!-- 📋 Popup Tambah Mesin -->
     <div class="popup" id="popupTambah">
         <div class="popup-content">
             <span class="close-btn" onclick="closeTambahPopup()">&times;</span>
@@ -302,13 +298,14 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
         </div>
     </div>
 
+    <!-- form hapus -->
     <form id="hapusForm" method="POST" style="display:none;">
         <input type="hidden" name="hapus_mesin" value="1">
         <input type="hidden" name="id_mesin" id="hapusMesinId">
     </form>
 
     <script>
-        // 🔍 Live search
+        // 🔍 Live Search
         document.getElementById('searchMesin').addEventListener('input', function() {
             const query = this.value.toLowerCase();
             const rows = document.querySelectorAll('#mesinTable tbody tr');
@@ -318,7 +315,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
             });
         });
 
-        // 📋 Riwayat mesin
+        // 📋 Riwayat Mesin
         function openRiwayatMesin(namaMesin) {
             const popup = document.getElementById('popupRiwayatMesin');
             const tbody = document.getElementById('riwayatMesinTable');
@@ -360,7 +357,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
         function openTambahPopup() { document.getElementById('popupTambah').style.display = 'flex'; }
         function closeTambahPopup() { document.getElementById('popupTambah').style.display = 'none'; }
 
-        // 🗑️ Hapus mesin
+        // 🗑️ Hapus Mesin
         function hapusMesin(event, id) {
             event.stopPropagation();
             if (confirm("Yakin ingin menghapus mesin ini?")) {

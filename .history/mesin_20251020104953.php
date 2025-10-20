@@ -35,11 +35,11 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
         body {
             font-family: 'Poppins', sans-serif;
         }
-        
+
         /* === MAIN CONTAINER === */
         .main-container {
             margin-left: 30px; /* posisi agar tidak mepet sidebar */
-            padding: 40px 10px 80px;
+            padding: 40px 10px;
         }
 
         h1 {
@@ -368,6 +368,37 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
                 document.getElementById('hapusForm').submit();
             }
         }
+
+        document.getElementById('searchMesin').addEventListener('input', function() {
+    const query = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#mesinTable tbody tr');
+    let visible = 0;
+
+    rows.forEach(row => {
+        const nama = row.cells[1].textContent.toLowerCase();
+        if (nama.includes(query)) {
+            row.style.display = '';
+            visible++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    // kalau gak ada hasil, tampilkan row placeholder
+    const tbody = document.querySelector('#mesinTable tbody');
+    const noDataRow = document.querySelector('.no-data-row');
+    if (visible === 0) {
+        if (!noDataRow) {
+            const tr = document.createElement('tr');
+            tr.className = 'no-data-row';
+            tr.innerHTML = "<td colspan='3'>Tidak ada hasil pencarian.</td>";
+            tbody.appendChild(tr);
+        }
+    } else if (noDataRow) {
+        noDataRow.remove();
+    }
+});
+
     </script>
 </body>
 </html>

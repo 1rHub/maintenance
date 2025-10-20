@@ -31,195 +31,220 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
     <meta charset="UTF-8">
     <title>Data Mesin</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-        
-        /* === MAIN CONTAINER === */
-        .main-container {
-            margin-left: 30px; /* posisi agar tidak mepet sidebar */
-            padding: 40px 10px 80px;
-        }
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
 
-        h1 {
-            font-size: 26px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 6px;
-        }
+    /* === MAIN CONTAINER === */
+    .main-container {
+        margin-left: 260px; /* jarak ideal dari sidebar */
+        padding: 40px 60px;
+        max-width: 1000px;
+    }
 
-        .breadcrumb {
-            color: #888;
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
+    h1 {
+        font-size: 26px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 6px;
+    }
 
-        /* === SEARCH BOX === */
-        .search-box {
-            width: 100%;
-            max-width: 400px;
-            display: flex;
-            align-items: center;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-            padding: 10px 15px;
-            margin-bottom: 20px;
-        }
+    .breadcrumb {
+        color: #888;
+        font-size: 14px;
+        margin-bottom: 30px;
+    }
 
-        .search-box i {
-            color: #39c6ed;
-            font-size: 18px;
-            margin-right: 10px;
-        }
+    /* === SEARCH BOX === */
+    .search-box {
+        width: 100%;
+        max-width: 400px;
+        display: flex;
+        align-items: center;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        padding: 10px 15px;
+        margin-bottom: 20px;
+    }
 
-        .search-box input {
-            flex: 1;
-            border: none;
-            outline: none;
-            background: transparent;
-            font-size: 15px;
-        }
+    .search-box i {
+        color: #39c6ed;
+        font-size: 18px;
+        margin-right: 10px;
+    }
 
-        .table {
-            width: 150%;
-            border-collapse: collapse;
-            text-align: left;
-        }
+    .search-box input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 15px;
+    }
 
-        #mesinTable th:first-child,
-#mesinTable td:first-child {
-    text-align: center;
-    width: 150px;
-}
+    /* === TABLE WRAPPER === */
+    .table-wrapper {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        overflow: hidden;
+        width: 100%;
+        min-width: 800px;
+    }
 
-#mesinTable th:last-child,
-#mesinTable td:last-child {
-    text-align: center;
-    width: 180px;
-}
+    /* === TABLE STYLES === */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed; /* kolom tetap */
+    }
 
-        th, td {
-            padding: 8px 16px;
-            border-bottom: 1px solid #eee;
-        }
+    th, td {
+        padding: 12px 16px;
+        border-bottom: 1px solid #eee;
+        word-wrap: break-word;
+    }
 
-        th {
-            background: #39c6ed;
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 14px;
-        }
+    th {
+        background: #39c6ed;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 14px;
+    }
 
-        tr:hover td {
-            background: #f0fbff;
-        }
+    td {
+        color: #333;
+        font-weight: 500;
+        text-align: left;
+    }
 
-        td {
-            color: #333;
-            font-weight: 500;
-            padding: 4px 16px;
-            
-        }
+    /* Rata kanan-kiri kolom */
+    #mesinTable th:first-child,
+    #mesinTable td:first-child {
+        text-align: center;
+        width: 80px;
+    }
 
-        td a {
-            color: #333;
-            text-decoration: none;
-            font-weight: 600;
-            transition: 0.2s;
-        }
+    #mesinTable th:last-child,
+    #mesinTable td:last-child {
+        text-align: center;
+        width: 120px;
+    }
 
-        td a:hover {
-            color: #39c6ed;
-        }
+    /* Hover effect */
+    tr:hover td {
+        background: #f0fbff;
+    }
 
-        /* === BUTTON HAPUS === */
-        .hapus-btn {
-            background: #e74c3c;
-            color: #fff;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+    td a {
+        color: #333;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.2s;
+        display: inline-block;
+        width: 100%;
+    }
 
-        .hapus-btn:hover {
-            background: #c0392b;
-            transform: scale(1.05);
-        }
+    td a:hover {
+        color: #39c6ed;
+    }
 
-        /* === FLOATING ADD BUTTON === */
-        .float-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 40px;
-            background-color: #39c6ed;
-            color: #fff;
-            font-size: 28px;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            border: none;
-            box-shadow: 0 6px 15px rgba(57,198,237,0.4);
-            cursor: pointer;
-            transition: 0.3s ease;
-        }
+    /* === BUTTON HAPUS === */
+    .hapus-btn {
+        background: #e74c3c;
+        color: #fff;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
 
-        .float-btn:hover {
-            background-color: #2da8cf;
-            transform: scale(1.1);
-        }
+    .hapus-btn:hover {
+        background: #c0392b;
+        transform: scale(1.05);
+    }
 
-        /* === POPUP === */
-        .popup .popup-content {
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            background: #fff;
-            border-radius: 15px;
-            padding: 25px 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
+    /* === FLOATING ADD BUTTON === */
+    .float-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 40px;
+        background-color: #39c6ed;
+        color: #fff;
+        font-size: 28px;
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        border: none;
+        box-shadow: 0 6px 15px rgba(57,198,237,0.4);
+        cursor: pointer;
+        transition: 0.3s ease;
+    }
 
-        .popup-content h2 {
-            margin-bottom: 15px;
-            font-size: 20px;
-            color: #333;
-        }
+    .float-btn:hover {
+        background-color: #2da8cf;
+        transform: scale(1.1);
+    }
 
-        .popup-content input[type="text"] {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0 15px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            outline: none;
-            transition: 0.2s;
-        }
+    /* === KETIKA TIDAK ADA DATA === */
+    .no-data-row td {
+        text-align: center;
+        color: #888;
+        font-style: italic;
+        height: 60px; /* tinggi tetap agar tabel tidak menciut */
+    }
 
-        .popup-content input:focus {
-            border-color: #39c6ed;
-            box-shadow: 0 0 5px rgba(57,198,237,0.3);
-        }
+    /* === POPUP === */
+    .popup .popup-content {
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+        background: #fff;
+        border-radius: 15px;
+        padding: 25px 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
 
-        .popup-content button {
-            background: #39c6ed;
-            color: #fff;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+    .popup-content h2 {
+        margin-bottom: 15px;
+        font-size: 20px;
+        color: #333;
+    }
 
-        .popup-content button:hover {
-            background: #2da8cf;
-        }
-    </style>
+    .popup-content input[type="text"] {
+        width: 90%;
+        padding: 10px;
+        margin: 10px 0 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        outline: none;
+        transition: 0.2s;
+    }
+
+    .popup-content input:focus {
+        border-color: #39c6ed;
+        box-shadow: 0 0 5px rgba(57,198,237,0.3);
+    }
+
+    .popup-content button {
+        background: #39c6ed;
+        color: #fff;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .popup-content button:hover {
+        background: #2da8cf;
+    }
+</style>
+
 </head>
 <body>
     <div class="main-container">
@@ -368,6 +393,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
                 document.getElementById('hapusForm').submit();
             }
         }
+        
     </script>
 </body>
 </html>

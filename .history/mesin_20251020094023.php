@@ -33,13 +33,14 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
         body {
+            background: #f4f6f9;
             font-family: 'Poppins', sans-serif;
         }
-        
+
         /* === MAIN CONTAINER === */
         .main-container {
             margin-left: 30px; /* posisi agar tidak mepet sidebar */
-            padding: 40px 10px 80px;
+            padding: 40px 10px;
         }
 
         h1 {
@@ -88,18 +89,6 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
             text-align: left;
         }
 
-        #mesinTable th:first-child,
-#mesinTable td:first-child {
-    text-align: center;
-    width: 150px;
-}
-
-#mesinTable th:last-child,
-#mesinTable td:last-child {
-    text-align: center;
-    width: 180px;
-}
-
         th, td {
             padding: 8px 16px;
             border-bottom: 1px solid #eee;
@@ -120,8 +109,6 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
         td {
             color: #333;
             font-weight: 500;
-            padding: 4px 16px;
-            
         }
 
         td a {
@@ -229,7 +216,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
         <div class="table-wrapper">
             <!-- 🔍 Search -->
             <div class="search-box">
-                <i></i>
+                <i>🔍</i>
                 <input type="text" id="searchMesin" placeholder="Cari nama mesin...">
             </div>
 

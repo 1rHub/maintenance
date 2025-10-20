@@ -35,7 +35,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
         body {
             font-family: 'Poppins', sans-serif;
         }
-        
+
         /* === MAIN CONTAINER === */
         .main-container {
             margin-left: 30px; /* posisi agar tidak mepet sidebar */
@@ -255,7 +255,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                 <td><button class="hapus-btn" onclick="hapusMesin(event, <?= $m['id'] ?>)">Hapus</button></td>
                             </tr>
                         <?php endforeach; ?>
-                    <?php else: ?>
+                    <?php else:
                         <tr><td colspan="3" style="text-align:center;">Belum ada data mesin.</td></tr>
                     <?php endif; ?>
                 </tbody>

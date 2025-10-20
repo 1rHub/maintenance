@@ -35,7 +35,13 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
         body {
             font-family: 'Poppins', sans-serif;
         }
-        
+        html, body {
+    height: auto;
+    min-height: 100%;
+    overflow-y: auto;
+}
+
+
         /* === MAIN CONTAINER === */
         .main-container {
             margin-left: 30px; /* posisi agar tidak mepet sidebar */

@@ -31,13 +31,11 @@ $mekanik_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 <!DOCTYPE html>
 <html lang="id">
-<link rel="stylesheet" href="assets/css/style.css">
-
+    <link rel="stylesheet" href="assets/css/style.css">
 <head>
     <meta charset="UTF-8">
     <title>Data Mekanik</title>
 </head>
-
 <body>
     <div class="mekanik-container">
         <h1>Daftar Mekanik</h1>
@@ -46,8 +44,13 @@ $mekanik_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
         <div class="mekanik-list">
             <?php foreach ($mekanik_list as $m): ?>
                 <div class="mekanik-card" onclick="openRiwayat('<?= htmlspecialchars($m['nama']) ?>')">
-                    <input type="text" class="editable" value="<?= htmlspecialchars($m['nama']) ?>" readonly
-                        ondblclick="enableEdit(this)" onblur="saveEdit(this)" onkeypress="handleEnter(event, this)">
+                    <input type="text"
+                        class="editable"
+                        value="<?= htmlspecialchars($m['nama']) ?>"
+                        readonly
+                        ondblclick="enableEdit(this)"
+                        onblur="saveEdit(this)"
+                        onkeypress="handleEnter(event, this)">
                 </div>
             <?php endforeach; ?>
         </div>
@@ -62,8 +65,7 @@ $mekanik_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
             <h2>Tambah Mekanik</h2>
             <form method="POST">
                 <input type="text" name="nama_mekanik" placeholder="Nama mekanik baru" required>
-                <button type="submit" name="tambah_mekanik"
-                    style="margin-top:10px; background:#39c6ed; color:white; padding:8px 16px; border:none; border-radius:6px;">Tambah</button>
+                <button type="submit" name="tambah_mekanik" style="margin-top:10px; background:#39c6ed; color:white; padding:8px 16px; border:none; border-radius:6px;">Tambah</button>
             </form>
         </div>
     </div>
@@ -85,9 +87,7 @@ $mekanik_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
                     </tr>
                 </thead>
                 <tbody id="riwayatTable">
-                    <tr>
-                        <td colspan="4" style="text-align:center;">Pilih mekanik untuk melihat riwayat</td>
-                    </tr>
+                    <tr><td colspan="4" style="text-align:center;">Pilih mekanik untuk melihat riwayat</td></tr>
                 </tbody>
             </table>
 
@@ -221,5 +221,4 @@ $mekanik_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
         }
     </script>
 </body>
-
 </html>

@@ -35,11 +35,11 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
         body {
             font-family: 'Poppins', sans-serif;
         }
-        
+
         /* === MAIN CONTAINER === */
         .main-container {
             margin-left: 30px; /* posisi agar tidak mepet sidebar */
-            padding: 40px 10px 80px;
+            padding: 40px 10px;
         }
 
         h1 {
@@ -100,6 +100,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
     width: 180px;
 }
 
+
         th, td {
             padding: 8px 16px;
             border-bottom: 1px solid #eee;
@@ -121,7 +122,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
             color: #333;
             font-weight: 500;
             padding: 4px 16px;
-            
+            vertical-align: middle;
         }
 
         td a {
@@ -129,6 +130,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
             text-decoration: none;
             font-weight: 600;
             transition: 0.2s;
+            padding: 100;
         }
 
         td a:hover {
