@@ -90,7 +90,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
         .search-box input {
             flex: 1;
-            border: none;
+            border: #333;
             outline: none;
             background: transparent;
             font-size: 15px;
@@ -275,7 +275,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
                     <thead>
                         <tr>
                             <th style="width:5%; text-align:center;"><input type="checkbox" id="selectAll"></th>
-                            <th style="width:5%;">No</th>
+                            <th style="width:10%;">No</th>
                             <th>Nama Mesin</th>
                         </tr>
                     </thead>

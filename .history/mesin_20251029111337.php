@@ -275,7 +275,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
                     <thead>
                         <tr>
                             <th style="width:5%; text-align:center;"><input type="checkbox" id="selectAll"></th>
-                            <th style="width:5%;">No</th>
+                            <th style="width:1%;">No</th>
                             <th>Nama Mesin</th>
                         </tr>
                     </thead>

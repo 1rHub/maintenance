@@ -295,6 +295,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                         </a>
                                     </td>
                                 </tr>
+                                j
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>

@@ -222,7 +222,7 @@ ORDER BY l.tanggal DESC;
                 <select name="mesin_id" required>
                     <option value="">-- Pilih Mesin --</option>
                     <?php
-                    $mesin_res = mysqli_query($conn, "SELECT id, nama_mesin FROM mesin ORDER BY id ASC");
+                    $mesin_res = mysqli_query($conn, "SELECT id, nama_mesin FROM mesin ORDER BY  ASC");
                     while ($m = mysqli_fetch_assoc($mesin_res)) {
                         echo "<option value='{$m['id']}'>{$m['nama_mesin']}</option>";
                     }

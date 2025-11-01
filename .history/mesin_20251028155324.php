@@ -40,15 +40,10 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
         /* === mesin.php === */
         .main-container {
-        flex-grow: 1;
-    height: auto;
-    align-self: flex-start;
-	margin-left: 0px;
-	padding: 40px;
-	background: #fff;
-	border-radius: 16px;
-	box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-}
+            margin-left: 30px;
+            padding: 40px 10px 80px;
+            overflow-x: hidden;
+        }
 
         #mesinTable {
             width: 100%;
@@ -84,7 +79,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
             background: #fff;
             border-radius: 12px;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-            padding: 10px 12px;
+            padding: 8px 12px;
             width: 250px;
         }
 
@@ -275,7 +270,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
                     <thead>
                         <tr>
                             <th style="width:5%; text-align:center;"><input type="checkbox" id="selectAll"></th>
-                            <th style="width:5%;">No</th>
+                            <th style="width:10%;">No</th>
                             <th>Nama Mesin</th>
                         </tr>
                     </thead>

@@ -84,7 +84,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
             background: #fff;
             border-radius: 12px;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-            padding: 10px 12px;
+            padding: 8px 12px;
             width: 250px;
         }
 
@@ -275,7 +275,7 @@ $mesin_list = mysqli_fetch_all($result, MYSQLI_ASSOC);
                     <thead>
                         <tr>
                             <th style="width:5%; text-align:center;"><input type="checkbox" id="selectAll"></th>
-                            <th style="width:5%;">No</th>
+                            <th style="width:10%;">No</th>
                             <th>Nama Mesin</th>
                         </tr>
                     </thead>

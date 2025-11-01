@@ -228,7 +228,7 @@ ORDER BY l.tanggal DESC;
                     }
                     ?>
                 </select>
-
+ 
                 <label>Pesan Kerusakan:</label>
                 <textarea name="pesan" rows="3" required></textarea>
                 <label>Kategori:</label>

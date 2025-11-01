@@ -80,6 +80,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ambil_laporan'])) {
     <title>Dashboard Laporan</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
+<style>
+    
+</style>
 
 <body>
     <div class="main-content">
@@ -222,7 +225,7 @@ ORDER BY l.tanggal DESC;
                 <select name="mesin_id" required>
                     <option value="">-- Pilih Mesin --</option>
                     <?php
-                    $mesin_res = mysqli_query($conn, "SELECT id, nama_mesin FROM mesin ORDER BY id ASC");
+                    $mesin_res = mysqli_query($conn, "SELECT id, nama_mesin FROM mesin ORDER BY nama_mesin ASC");
                     while ($m = mysqli_fetch_assoc($mesin_res)) {
                         echo "<option value='{$m['id']}'>{$m['nama_mesin']}</option>";
                     }
