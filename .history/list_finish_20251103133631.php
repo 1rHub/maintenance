@@ -2,7 +2,6 @@
 session_start();
 include "koneksi.php";
 include "sidebar.php";
-date_default_timezone_set('Asia/Jakarta'); // 🕐 pastikan waktu sesuai WIB
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -52,9 +51,7 @@ date_default_timezone_set('Asia/Jakarta'); // 🕐 pastikan waktu sesuai WIB
                 <thead>
                     <tr>
                         <th>Tanggal Registrasi</th>
-                        <th>Tanggal Ditunda</th> <!-- 🆕 -->
                         <th>Tanggal Selesai</th>
-                        <th>Durasi</th> <!-- 🆕 -->
                         <th>Mesin</th>
                         <th>Keterangan</th>
                         <th>Nama Pelapor</th>
@@ -67,48 +64,25 @@ date_default_timezone_set('Asia/Jakarta'); // 🕐 pastikan waktu sesuai WIB
                 <tbody>
                     <?php
                     $result = mysqli_query($conn, "
-                        SELECT 
-                            l.*, 
-                            m.nama_mesin,
-                            GROUP_CONCAT(mk.nama SEPARATOR ', ') AS nama_mekanik
-                        FROM laporan l
-                        LEFT JOIN mesin m ON l.mesin_id = m.id
-                        LEFT JOIN mekanik mk ON FIND_IN_SET(mk.id, l.mekanik_id)
-                        WHERE l.status = 'finish'
-                        GROUP BY l.id
-                        ORDER BY l.tanggal_selesai DESC
-                    ");
+    SELECT 
+    l.*, 
+    m.nama_mesin,
+    GROUP_CONCAT(mk.nama SEPARATOR ', ') AS nama_mekanik
+FROM laporan l
+LEFT JOIN mesin m ON l.mesin_id = m.id
+LEFT JOIN mekanik mk ON FIND_IN_SET(mk.id, l.mekanik_id)
+WHERE l.status = 'finish'
+GROUP BY l.id
+ORDER BY l.tanggal_selesai DESC
+");
 
                     if (mysqli_num_rows($result) > 0) {
                         while ($row = mysqli_fetch_assoc($result)) {
                             $tanggal_pure = explode(' ', $row['tanggal'])[0];
                             $kategoriClass = strtolower($row['kategori']);
-
-                            // 🧮 Hitung durasi kerja (jam)
-                            $startTime = $row['tanggal_tunda'] ? $row['tanggal_tunda'] : $row['tanggal'];
-                            $endTime = $row['tanggal_selesai'];
-
-                            $durasiJam = '-';
-if ($endTime && $startTime) {
-    $start = strtotime($startTime);
-    $end = strtotime($endTime);
-    $diffSeconds = $end - $start;
-    $diffMinutes = round($diffSeconds / 60);
-    $diffHours = round($diffSeconds / 3600, 1);
-
-    if ($diffHours < 1) {
-        $durasiJam = $diffMinutes . " Mnt";
-    } else {
-        $durasiJam = $diffHours . " Jam";
-    }
-}
-
-
                             echo "<tr data-kategori='{$row['kategori']}' data-tanggal='{$tanggal_pure}'>
                                 <td>{$row['tanggal']}</td>
-                                <td>" . ($row['tanggal_tunda'] ?? '-') . "</td> <!-- 🆕 -->
                                 <td>{$row['tanggal_selesai']}</td>
-                                <td>{$durasiJam}</td> <!-- 🆕 -->
                                 <td>{$row['nama_mesin']}</td>
                                 <td>{$row['pesan']}</td>
                                 <td>{$row['nama']}</td>
@@ -116,16 +90,19 @@ if ($endTime && $startTime) {
                                 <td>" . ($row['nama_mekanik'] ?? '-') . "</td>
                                 <td>{$row['pesan_mekanik']}</td>
                                 <td class='kategori {$kategoriClass}'>{$row['kategori']}</td>
+                                
                             </tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='11' style='text-align:center; padding:15px;'>Tidak ada laporan selesai.</td></tr>";
+                        echo "<tr><td colspan='8' style='text-align:center; padding:15px;'>Tidak ada laporan selesai.</td></tr>";
                     }
                     ?>
                 </tbody>
             </table>
 
+            <!-- Pesan jika tidak ada data -->
             <p id="noData">Tidak ada laporan selesai.</p>
+            
         </div>
     </div>
 
@@ -162,6 +139,7 @@ if ($endTime && $startTime) {
                 if (visible) visibleCount++;
             });
 
+            // tampilkan pesan jika tidak ada baris yang cocok
             noDataMsg.style.display = (visibleCount === 0) ? 'block' : 'none';
         }
 

@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ambil_laporan'])) {
                         <th style="width:40px; text-align:center;">
                             <input type="checkbox" id="checkAll" onclick="toggleAll(this)">
                         </th>
-                        <th>Tanggal Registrasi</th>
+                        <th>Tanggal</th>
                         <th>Mesin</th>
                         <th>Keterangan</th>
                         <th>Pesan Mekanik</th>

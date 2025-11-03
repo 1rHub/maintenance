@@ -89,20 +89,12 @@ date_default_timezone_set('Asia/Jakarta'); // 🕐 pastikan waktu sesuai WIB
                             $endTime = $row['tanggal_selesai'];
 
                             $durasiJam = '-';
-if ($endTime && $startTime) {
-    $start = strtotime($startTime);
-    $end = strtotime($endTime);
-    $diffSeconds = $end - $start;
-    $diffMinutes = round($diffSeconds / 60);
-    $diffHours = round($diffSeconds / 3600, 1);
-
-    if ($diffHours < 1) {
-        $durasiJam = $diffMinutes . " Mnt";
-    } else {
-        $durasiJam = $diffHours . " Jam";
-    }
-}
-
+                            if ($endTime && $startTime) {
+                                $start = strtotime($startTime);
+                                $end = strtotime($endTime);
+                                $diffHours = round(($end - $start) / 3600, 1);
+                                $durasiJam = $diffHours . " Jam";
+                            }
 
                             echo "<tr data-kategori='{$row['kategori']}' data-tanggal='{$tanggal_pure}'>
                                 <td>{$row['tanggal']}</td>

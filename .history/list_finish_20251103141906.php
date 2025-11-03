@@ -97,7 +97,7 @@ if ($endTime && $startTime) {
     $diffHours = round($diffSeconds / 3600, 1);
 
     if ($diffHours < 1) {
-        $durasiJam = $diffMinutes . " Mnt";
+        $durasiJam = $diffMinutes . " Menit";
     } else {
         $durasiJam = $diffHours . " Jam";
     }
@@ -108,7 +108,7 @@ if ($endTime && $startTime) {
                                 <td>{$row['tanggal']}</td>
                                 <td>" . ($row['tanggal_tunda'] ?? '-') . "</td> <!-- 🆕 -->
                                 <td>{$row['tanggal_selesai']}</td>
-                                <td>{$durasiJam}</td> <!-- 🆕 -->
+                                <td>{$durasi}</td> <!-- 🆕 -->
                                 <td>{$row['nama_mesin']}</td>
                                 <td>{$row['pesan']}</td>
                                 <td>{$row['nama']}</td>

@@ -97,7 +97,7 @@ if ($endTime && $startTime) {
     $diffHours = round($diffSeconds / 3600, 1);
 
     if ($diffHours < 1) {
-        $durasiJam = $diffMinutes . " Mnt";
+        $durasiJam = $diffMinutes . " Menit";
     } else {
         $durasiJam = $diffHours . " Jam";
     }

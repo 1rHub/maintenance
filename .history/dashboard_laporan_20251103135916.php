@@ -123,6 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ambil_laporan'])) {
                             <input type="checkbox" id="checkAll" onclick="toggleAll(this)">
                         </th>
                         <th>Tanggal Registrasi</th>
+                        <th>Tanggal Ditunda</th>
                         <th>Mesin</th>
                         <th>Keterangan</th>
                         <th>Pesan Mekanik</th>
@@ -147,12 +148,14 @@ ORDER BY l.tanggal DESC;
 
                     if (mysqli_num_rows($result) > 0) {
                         while ($laporan = mysqli_fetch_assoc($result)) {
+                            $tanggal_ditunda = $laporan['tanggal_ditunda'] ? $laporan['tanggal_ditunda'] : '-';
                             $kategoriClass = strtolower($laporan['kategori']);
                             echo "<tr data-kategori='{$laporan['kategori']}'>
                                 <td style='text-align:center;'>
                                     <input type='checkbox' name='selected_id[]' value='{$laporan['id']}'>
                                 </td>
                                 <td>{$laporan['tanggal']}</td>
+                                <td>
                                 <td>
                                     <a href='#' onclick=\"openDetailPopup(
                                         '{$laporan['id']}',

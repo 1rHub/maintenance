@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tunda_laporan'])) {
 
     // status menjadi 'ditunda', tapi nama mekanik tidak dihapus
     $sql = "UPDATE laporan 
-            SET status='ditunda', pesan_mekanik=?, tanggal_tunda=? 
+            SET status='ditunda', pesan_mekanik=?, tanggal_ditunda=? 
             WHERE id=?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ssi", $pesan_mekanik, $tanggal_ditunda, $id_laporan);
