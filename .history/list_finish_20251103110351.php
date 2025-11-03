@@ -50,7 +50,7 @@ include "sidebar.php";
             <table id="laporanTable">
                 <thead>
                     <tr>
-                        <th>Tanggal Registrasi</th>
+                        <th>Tanggal</th>
                         <th>Tanggal Selesai</th>
                         <th>Mesin</th>
                         <th>Keterangan</th>
@@ -82,7 +82,7 @@ ORDER BY l.tanggal_selesai DESC
                             $tanggal_pure = explode(' ', $row['tanggal'])[0];
                             $kategoriClass = strtolower($row['kategori']);
                             echo "<tr data-kategori='{$row['kategori']}' data-tanggal='{$tanggal_pure}'>
-                                <td>{$row['tanggal']}</td>
+                                <td>{$row['tanggal_masuk']}</td>
                                 <td>{$row['tanggal_selesai']}</td>
                                 <td>{$row['nama_mesin']}</td>
                                 <td>{$row['pesan']}</td>

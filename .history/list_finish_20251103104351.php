@@ -50,8 +50,7 @@ include "sidebar.php";
             <table id="laporanTable">
                 <thead>
                     <tr>
-                        <th>Tanggal Registrasi</th>
-                        <th>Tanggal Selesai</th>
+                        <th>Tanggal</th>
                         <th>Mesin</th>
                         <th>Keterangan</th>
                         <th>Nama Pelapor</th>
@@ -59,7 +58,6 @@ include "sidebar.php";
                         <th>Nama Mekanik</th>
                         <th>Pesan Mekanik</th>
                         <th>Kategori</th>
-                        
                     </tr>
                 </thead>
                 <tbody>
@@ -83,7 +81,6 @@ ORDER BY l.tanggal_selesai DESC
                             $kategoriClass = strtolower($row['kategori']);
                             echo "<tr data-kategori='{$row['kategori']}' data-tanggal='{$tanggal_pure}'>
                                 <td>{$row['tanggal']}</td>
-                                <td>{$row['tanggal_selesai']}</td>
                                 <td>{$row['nama_mesin']}</td>
                                 <td>{$row['pesan']}</td>
                                 <td>{$row['nama']}</td>
@@ -91,7 +88,6 @@ ORDER BY l.tanggal_selesai DESC
                                 <td>" . ($row['nama_mekanik'] ?? '-') . "</td>
                                 <td>{$row['pesan_mekanik']}</td>
                                 <td class='kategori {$kategoriClass}'>{$row['kategori']}</td>
-                                
                             </tr>";
                         }
                     } else {

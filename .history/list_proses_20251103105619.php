@@ -1,9 +1,23 @@
 <?php
-date_default_timezone_set('Asia/Jakarta');
 session_start();
 include "koneksi.php";
 include "sidebar.php";
 
+// Tombol “Selesai”
+if (isset($_POST['selesaikan'])) {
+    $id = $_POST['id_laporan'];
+    $tanggal_selesai = date('Y-m-d H:i:s');
+    mysqli_query($conn, "UPDATE laporan SET status='finish', tanggal_selesai='$tanggal_selesai' WHERE id='$id'");
+    $pesan_mekanik = $_POST['pesan_mekanik'];
+
+    $sql = "UPDATE laporan SET status='finish', pesan_mekanik=? WHERE id=?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $pesan_mekanik, $id_laporan);
+    if ($stmt->execute()) {
+        header("Location: list_proses.php?selesai=1");
+        exit;
+    }
+}
 // Tombol “Selesai”
 if (isset($_POST['selesai_laporan'])) {
     $id_laporan = $_POST['id_laporan'];

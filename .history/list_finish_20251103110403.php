@@ -50,7 +50,7 @@ include "sidebar.php";
             <table id="laporanTable">
                 <thead>
                     <tr>
-                        <th>Tanggal Registrasi</th>
+                        <th>Tanggal Masuk</th>
                         <th>Tanggal Selesai</th>
                         <th>Mesin</th>
                         <th>Keterangan</th>
